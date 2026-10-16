@@ -1,7 +1,9 @@
 openapi: 3.0.0
 info:
   title: LedgerLocket API
-  version: 0.1.0
+  version: 0.2.0
+servers:
+  - url: http://localhost:5000
 paths:
   /auth/register:
     post:
@@ -19,6 +21,66 @@ paths:
       responses:
         '201':
           description: Created
+  /auth/login:
+    post:
+      summary: Login with email and password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: tokens
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh:
+                  type: string
+      responses:
+        '200':
+          description: tokens
+  /wallets/{address}/balance:
+    get:
+      summary: Get wallet balance
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: balance
+  /transactions/mint:
+    post:
+      summary: Mint credits to a wallet (admin)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to_address:
+                  type: string
+                amount:
+                  type: number
+                memo:
+                  type: string
+      responses:
+        '201':
+          description: transaction created
   /transactions/{tx_ref}/screenshot.png:
     get:
       summary: Get receipt screenshot for transaction
@@ -33,3 +95,9 @@ paths:
           description: PNG image
           content:
             image/png: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

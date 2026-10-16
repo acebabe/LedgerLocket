@@ -8,3 +8,8 @@ celery[redis]
 python-dotenv
 PyJWT
 cryptography
+flask-socketio
+python-socketio
+eventlet
+passlib[bcrypt]
+redis
