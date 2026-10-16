@@ -16,6 +16,8 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     roles = db.Column(JSON, default=lambda: ["user"])
+    failed_login_attempts = db.Column(db.Integer, default=0)
+    locked_until = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     wallets = db.relationship("Wallet", back_populates="user")
 
@@ -108,7 +110,7 @@ class KycProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(50), default="pending")
-    documents = db.Column(JSON, default=list)
+    documents = db.Column(db.JSON, default=list)
     reviewed_by = db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

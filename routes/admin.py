@@ -1,18 +1,34 @@
 from flask import Blueprint, jsonify, request
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
-from models import User, db
+from models import db, User
 
 bp = Blueprint("admin", __name__)
 
 
+def admin_required(func):
+    def wrapper(*args, **kwargs):
+        from flask_jwt_extended import get_jwt_identity
+n        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user or "admin" not in (user.roles or []):
+            return jsonify({"msg": "admin required"}), 403
+        return func(*args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
 @bp.route("/users", methods=["GET"])
+@jwt_required()
+@admin_required
 def list_users():
     users = User.query.all()
     return jsonify([{"id": u.id, "email": u.email, "roles": u.roles or []} for u in users])
 
 
 @bp.route("/set-role", methods=["POST"])
+@jwt_required()
+@admin_required
 def set_role():
     data = request.get_json() or {}
     email = data.get("email")
