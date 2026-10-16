@@ -1,0 +1,10 @@
+flask
+Flask-SQLAlchemy
+Flask-Migrate
+Jinja2
+playwright
+psycopg2-binary
+celery[redis]
+python-dotenv
+PyJWT
+cryptography
