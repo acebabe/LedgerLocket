@@ -1,49 +1,39 @@
-version: '3.8'
-
+version: "3.8"
 services:
   db:
-    image: postgres:15
+    image: postgres:14
     environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ledgerlocket
-      POSTGRES_USER: ledger
-      POSTGRES_PASSWORD: ledgerpass
     volumes:
-      - db-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      - pgdata:/var/lib/postgresql/data
 
   redis:
     image: redis:7
-    ports:
-      - "6379:6379"
 
   web:
-    build: ./backend
-    command: flask run --host=0.0.0.0 --port=5000
-    volumes:
-      - ./backend:/app
+    build: .
+    depends_on:
+      - db
+      - redis
     environment:
-      - FLASK_ENV=development
-      - DATABASE_URL=postgresql://ledger:ledgerpass@db:5432/ledgerlocket
-      - REDIS_URL=redis://redis:6379/0
-      - PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/ledgerlocket
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: changeme
+      JWT_SECRET_KEY: jwt-secret
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
     ports:
       - "5000:5000"
-    depends_on:
-      - db
-      - redis
+    command: flask run --host=0.0.0.0 --port=5000
 
   worker:
-    build: ./backend
-    command: celery -A manage.celery worker --loglevel=info
-    volumes:
-      - ./backend:/app
-    environment:
-      - DATABASE_URL=postgresql://ledger:ledgerpass@db:5432/ledgerlocket
-      - REDIS_URL=redis://redis:6379/0
+    build: .
     depends_on:
       - db
       - redis
+    command: celery -A tasks.cel worker --loglevel=info
 
 volumes:
-  db-data:
+  pgdata:

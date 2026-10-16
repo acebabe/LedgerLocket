@@ -1,27 +1,43 @@
-# LedgerLocket — scaffold
+# LedgerLocket starter
 
-This repository contains an initial scaffold for LedgerLocket: a centralized non-withdrawable credits platform.
+A realistic, production-minded starter for a centralized off-chain credit ledger with:
+- email/password signup + login
+- admin mint flows
+- wallet balance tracking
+- notification system via Socket.IO
+- Redis/Celery background jobs
+- Playwright receipt screenshot generation
+- Coinbase and Binance connector stubs
+- Docker Compose development setup
 
-What's included in this scaffold branch:
-
-- Flask backend (backend/) with basic models, a mint endpoint, and a Playwright-based receipt PNG endpoint.
-- Connector stubs for Coinbase and Binance (backend/app/connectors).
-- Docker Compose for local development (Postgres, Redis, web, worker).
-- OpenAPI starter (openapi.yaml).
-
-Quick start (dev):
-
-1. Copy `.env.example` to `.env` and customize if needed.
-2. Start services:
+Quickstart
+1. Copy `.env.example` and set values.
+2. Start development services:
    docker-compose up --build
+3. Initialize the database:
+   docker-compose exec web flask db init
+   docker-compose exec web flask db migrate
+   docker-compose exec web flask db upgrade
+4. Use the API routes under `/auth`, `/wallets`, `/transactions`, and `/notifications`.
 
-3. Create the DB & run migrations (inside the `web` container):
-   flask db init
-   flask db migrate
-   flask db upgrade
+Important
+- Never commit real secrets.
+- Use a secret manager in production.
+- Rotate any public credentials before sharing.
 
-4. Optionally install Playwright browsers locally for testing:
-   python -m playwright install chromium
+Key endpoints
+- POST /auth/register
+- POST /auth/login
+- GET /auth/verify?token=...
+- POST /auth/password-reset/request
+- POST /auth/password-reset/confirm
+- GET /wallets/<address>/balance
+- POST /wallets/link
+- POST /transactions/mint
+- POST /transactions/transfer
+- GET /transactions/<tx_ref>/screenshot.png
 
-Notes:
-- This is a minimal scaffold to get you started. The system is NOT production-ready. You should add secure secret management, encrypted storage for credentials, RBAC, tests, and CI.
+Demo admin flow
+- Create an admin user in the DB with roles ["admin"], or seed one manually.
+- POST /transactions/mint to credit a wallet.
+- Fetch the PNG receipt from the transaction route.
