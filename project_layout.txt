@@ -1,0 +1,15 @@
+/project
+  ├─ app.py
+  ├─ config.py
+  ├─ requirements.txt
+  ├─ models.py
+  ├─ routes/
+  │   ├─ auth.py
+  │   ├─ wallets.py
+  │   ├─ transactions.py
+  │   └─ notifications.py
+  ├─ tasks.py
+  ├─ notifications.py
+  ├─ migrations/   (Flask-Migrate)
+  ├─ docker-compose.yml
+  └─ Dockerfile
