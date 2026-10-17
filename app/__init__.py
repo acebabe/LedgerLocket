@@ -15,8 +15,8 @@ def create_app():
     migrate.init_app(app, db)
     mail.init_app(app)
 
-    # register blueprints
-    from app.api.router import api_bp
+    # register blueprints (import the package-level api_bp exposed by app.api)
+    from app.api import api_bp
     app.register_blueprint(api_bp, url_prefix='/api')
 
     # health
