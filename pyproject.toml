@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ledgerlocket"
+version = "0.1.0"
+description = "LedgerLocket - off-chain ledger with testnet crediting and admin controls"
+authors = [
+    {name = "acebabe"}
+]
+
+[tool.poetry.dev-dependencies]
