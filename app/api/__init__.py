@@ -1,8 +1,7 @@
 from flask import Blueprint
 
-api_bp = Blueprint('api', __name__)
+api_bp = Blueprint("api", __name__)
 
-# import and register v1
-from app.api.v1 import router as v1_router
+from app.api.v1 import blueprint as v1_blueprint
 
-api_bp.register_blueprint(v1_router.blueprint, url_prefix='/v1')
+api_bp.register_blueprint(v1_blueprint, url_prefix="/v1")

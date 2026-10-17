@@ -1,8 +1,7 @@
-# app/services/notification_service.py
+from threading import Thread
 from flask_mail import Message
 from app.extensions import mail, db
 from app.models.notification import Notification
-from threading import Thread
 
 
 def _send_async(app, msg):
@@ -19,11 +18,11 @@ class NotificationService:
         db.session.add(n)
         db.session.commit()
 
-        if email and self.app.config.get('MAIL_USERNAME'):
+        if email and self.app.config.get("MAIL_USERNAME"):
             msg = Message(
-                subject='LedgerLocket: Incoming Test Credit',
+                subject="LedgerLocket: Incoming Credit",
                 recipients=[email],
-                body=f"{message}\nTransaction: {tx_id}"
+                body=f"{message}\nTransaction: {tx_id}",
             )
             thr = Thread(target=_send_async, args=(self.app, msg))
             thr.start()

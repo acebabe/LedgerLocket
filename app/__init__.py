@@ -10,18 +10,15 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # init extensions
     db.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
 
-    # register blueprints (import the package-level api_bp exposed by app.api)
     from app.api import api_bp
-    app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(api_bp, url_prefix="/api")
 
-    # health
-    @app.route('/health')
+    @app.route("/health")
     def health():
-        return {'status':'ok'}
+        return {"status": "ok"}
 
     return app
